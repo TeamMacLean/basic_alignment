@@ -1,7 +1,7 @@
 --- 
 title: "Basic Read Alignment"
 author: "Dan MacLean"
-date: "`r Sys.Date()`"
+date: "2019-11-28"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
@@ -18,7 +18,8 @@ This is a _sample_ book written in **Markdown**. You can use anything that Pando
 
 The **bookdown** package can be installed from CRAN or Github:
 
-```{r eval=FALSE}
+
+```r
 install.packages("bookdown")
 # or the development version
 # devtools::install_github("rstudio/bookdown")
@@ -28,9 +29,4 @@ Remember each Rmd file contains one and only one chapter, and a chapter is defin
 
 To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.name/tinytex/>.
 
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```
+
