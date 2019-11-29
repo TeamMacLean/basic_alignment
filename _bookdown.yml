@@ -6,4 +6,4 @@ delete_merged_file: true
 output_dir: docs
 clean: ["docs"]
 new_session: yes
-rmd_files: ["index.Rmd", "01-intro.Rmd", "02-running-minimap2.Rmd", "03-filtering-bad-alignments.Rmd", "04-Using-BAM-Files.Rmd", "05-automation-with-scripts.Rmd"]
+rmd_files: ["index.Rmd", "01-intro.Rmd", "02-running-minimap2.Rmd", "03-filtering-bad-alignments.Rmd", "04-Using-BAM-Files.Rmd", "05-automation.Rmd", "06-references.Rmd"]
