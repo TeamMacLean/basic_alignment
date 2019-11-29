@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Running minimap2 | Basic Read Alignment</title>
+  <meta name="description" content="A minimal guide to performing read alignment against a reference" />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Running minimap2 | Basic Read Alignment" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A minimal guide to performing read alignment against a reference" />
+  <meta name="github-repo" content="TeamMacLean/basic_alignment" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Running minimap2 | Basic Read Alignment" />
+  
+  <meta name="twitter:description" content="A minimal guide to performing read alignment against a reference" />
+  
+
+<meta name="author" content="Dan MacLean" />
+
+
+<meta name="date" content="2019-11-29" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="intro.html"/>
+<link rel="next" href="filtering-badly-aligned-reads.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A minimal alignment guide</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About this course</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prerequisites"><i class="fa fa-check"></i><b>1.1</b> Prerequisites</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#local-software-installation"><i class="fa fa-check"></i><b>1.1.1</b> Local Software Installation</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#sample-reference-genome-and-reads"><i class="fa fa-check"></i><b>1.1.2</b> Sample reference genome and reads</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> The Alignment Pipeline</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#align-all-reads-to-a-reference"><i class="fa fa-check"></i><b>2.1</b> Align all reads to a reference</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#filter-out-badly-scoring-reads"><i class="fa fa-check"></i><b>2.2</b> Filter out badly scoring reads</a></li>
+<li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#sort-and-compress-output"><i class="fa fa-check"></i><b>2.3</b> Sort and compress output</a></li>
+<li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#further-reading"><i class="fa fa-check"></i><b>2.4</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="running-minimap2.html"><a href="running-minimap2.html"><i class="fa fa-check"></i><b>3</b> Running <code>minimap2</code></a><ul>
+<li class="chapter" data-level="3.1" data-path="running-minimap2.html"><a href="running-minimap2.html#the-minimap2-command-and-options"><i class="fa fa-check"></i><b>3.1</b> The <code>minimap2</code> command and options</a></li>
+<li class="chapter" data-level="3.2" data-path="running-minimap2.html"><a href="running-minimap2.html#further-reading-1"><i class="fa fa-check"></i><b>3.2</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html"><i class="fa fa-check"></i><b>4</b> Filtering Badly Aligned Reads</a><ul>
+<li class="chapter" data-level="4.1" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#sam-format"><i class="fa fa-check"></i><b>4.1</b> SAM Format</a></li>
+<li class="chapter" data-level="4.2" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#samtools"><i class="fa fa-check"></i><b>4.2</b> <code>samtools</code></a></li>
+<li class="chapter" data-level="4.3" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#the-samtools-command-and-options"><i class="fa fa-check"></i><b>4.3</b> The <code>samtools</code> command and options</a></li>
+<li class="chapter" data-level="4.4" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#checking-the-filtering"><i class="fa fa-check"></i><b>4.4</b> Checking the filtering</a></li>
+<li class="chapter" data-level="4.5" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#are-we-done"><i class="fa fa-check"></i><b>4.5</b> Are we done?</a></li>
+<li class="chapter" data-level="4.6" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#further-reading-2"><i class="fa fa-check"></i><b>4.6</b> Further Reading</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#sam-format-1"><i class="fa fa-check"></i><b>4.6.1</b> SAM Format</a></li>
+<li class="chapter" data-level="4.6.2" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#mapping-quality"><i class="fa fa-check"></i><b>4.6.2</b> Mapping Quality</a></li>
+<li class="chapter" data-level="4.6.3" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#flags"><i class="fa fa-check"></i><b>4.6.3</b> Flags</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html"><i class="fa fa-check"></i><b>5</b> Connecting Programs and Compressing output</a><ul>
+<li class="chapter" data-level="5.1" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#bam-files"><i class="fa fa-check"></i><b>5.1</b> BAM Files</a></li>
+<li class="chapter" data-level="5.2" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#connecting-program-input-and-output-with-pipes"><i class="fa fa-check"></i><b>5.2</b> Connecting Program Input and Output With Pipes</a></li>
+<li class="chapter" data-level="5.3" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#from-reads-to-filtered-alignments-in-one-step"><i class="fa fa-check"></i><b>5.3</b> From reads to filtered alignments in one step</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#from-reads-to-filtered-alignments-in-a-bam-file-in-one-step"><i class="fa fa-check"></i><b>5.3.1</b> From reads to filtered alignments in a BAM file in one step</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#sorting-bam-files"><i class="fa fa-check"></i><b>5.4</b> Sorting BAM files</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#automatically-deleting-the-unsorted-bam"><i class="fa fa-check"></i><b>5.4.1</b> Automatically deleting the unsorted BAM</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#indexing-the-sorted-bam"><i class="fa fa-check"></i><b>5.5</b> Indexing the sorted BAM</a></li>
+<li class="chapter" data-level="5.6" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#further-reading-3"><i class="fa fa-check"></i><b>5.6</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Basic Read Alignment</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="running-minimap2" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Running <code>minimap2</code></h1>
+<p>Running <code>minimap2</code> takes only one step. Assuming we’ve already <code>cd</code>’d into the directory with the reads and reference we can use this command</p>
+<pre><code>  minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq &gt; aln.sam</code></pre>
+<p>Try running that and see what happens… You should get an output file in the working directory called <code>aln.sam</code>. On my machine this takes just a few seconds to run.</p>
+<p>Let’s look at the command in detail.</p>
+<div id="the-minimap2-command-and-options" class="section level2">
+<h2><span class="header-section-number">3.1</span> The <code>minimap2</code> command and options</h2>
+<p>First we get this</p>
+<pre><code>  minimap2</code></pre>
+<p>which is the name of the actual program we intend to run, so it isn’t surprising that it comes first. The rest of the command are options (sometimes called arguments) telling the program how to behave and what it needs to know. Next up is this</p>
+<pre><code>           -ax sr</code></pre>
+<p>which gives option <code>a</code> meaning print out SAM format data. And option <code>x</code> meaningwe wish to use a preset parameter set. The preset we wish to use comes after <code>x</code> and is <code>sr</code>, which stands for <code>short reads</code> and tells <code>minimap2</code> to use settings for short reads against a long genome. Next is this</p>
+<pre><code>                   ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq</code></pre>
+<p>which are the input files in the ‘reference’ ‘left read’ ‘right read’ order. Finally, we have</p>
+<pre><code>                                                                       &gt; aln.sam</code></pre>
+<p>which is the <code>&gt;</code> output redirect operator and the name of an output file to write to. This bit specifies where the output goes.</p>
+<p>So the structure of the <code>minimap2</code> command (like many other commands) is simply <code>program_name options input output</code>.</p>
+<p>And this one command is all we need for a basic alignment with <code>minimap2</code>. We can now move on to the next step in the pipeline.</p>
+</div>
+<div id="further-reading-1" class="section level2">
+<h2><span class="header-section-number">3.2</span> Further Reading</h2>
+<p>The <code>&gt;</code> operator.
+<code>minimap2</code> further instructions and github</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="filtering-badly-aligned-reads.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["Basic Read Alignment.pdf", "Basic Read Alignment.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

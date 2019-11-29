@@ -1,55 +1,29 @@
-# Introduction {#intro}
+# The Alignment Pipeline {#intro}
 
-You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
+In this chapter we'll look at an overview standard paired-end read run of `minimap2`, what it outputs and how to manipulate the output with `samtools`.
 
-Figures and tables with captions will be placed in `figure` and `table` environments, respectively.
+The overall pipeline is very straightforward...
 
+  1. Align all reads to a reference
+  2. Filter badly scoring reads
+  3. Sort and compress output
+  
 
-```r
-par(mar = c(4, 4, .1, .1))
-plot(pressure, type = 'b', pch = 19)
-```
+## Align all reads to a reference
 
-<div class="figure" style="text-align: center">
-<img src="01-intro_files/figure-epub3/nice-fig-1.png" alt="Here is a nice figure!" width="80%" />
-<p class="caption">(\#fig:nice-fig)Here is a nice figure!</p>
-</div>
+  This is the main step, and with `minimap2` it can be accomplished with a single command-line. In this step each read is aligned against the reference, and its best aligning position found. That position, along with a metric of the quality of the single alignment is reported in a `SAM` format file.
 
-Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Figure \@ref(fig:nice-fig). Similarly, you can reference tables generated from `knitr::kable()`, e.g., see Table \@ref(tab:nice-tab).
+## Filter out badly scoring reads
+  
+  This is the quality control step. We remove reads that don't have a good alignment score because in most contexts it means the read is a bad read with bad sequence in it. Of course in some contexts it isn't - it depends what you're aligning to what, but for the RNAseq situation or SNP calling situation where we expect the reads to be very like the reference this is appropriate. This step is done with `samtools`
+  
+## Sort and compress output
+  
+  Once filtering is done and we have the set of reads we wish to retain we can take our output file and convert it to a sorted binary format that uses less disk space and is optimised for searching in downstream analysis. This step is a kind of housekeeping step that makes everything later easier. We do it with `samtools`
+  
+## Further Reading
 
+1. FastQ quality scores
+2. Alignment scores
+3. Why minimap2 and not bwa bowtie
 
-```r
-knitr::kable(
-  head(iris, 20), caption = 'Here is a nice table!',
-  booktabs = TRUE
-)
-```
-
-
-
-Table: (\#tab:nice-tab)Here is a nice table!
-
- Sepal.Length   Sepal.Width   Petal.Length   Petal.Width  Species 
--------------  ------------  -------------  ------------  --------
-          5.1           3.5            1.4           0.2  setosa  
-          4.9           3.0            1.4           0.2  setosa  
-          4.7           3.2            1.3           0.2  setosa  
-          4.6           3.1            1.5           0.2  setosa  
-          5.0           3.6            1.4           0.2  setosa  
-          5.4           3.9            1.7           0.4  setosa  
-          4.6           3.4            1.4           0.3  setosa  
-          5.0           3.4            1.5           0.2  setosa  
-          4.4           2.9            1.4           0.2  setosa  
-          4.9           3.1            1.5           0.1  setosa  
-          5.4           3.7            1.5           0.2  setosa  
-          4.8           3.4            1.6           0.2  setosa  
-          4.8           3.0            1.4           0.1  setosa  
-          4.3           3.0            1.1           0.1  setosa  
-          5.8           4.0            1.2           0.2  setosa  
-          5.7           4.4            1.5           0.4  setosa  
-          5.4           3.9            1.3           0.4  setosa  
-          5.1           3.5            1.4           0.3  setosa  
-          5.7           3.8            1.7           0.3  setosa  
-          5.1           3.8            1.5           0.3  setosa  
-
-You can write citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].

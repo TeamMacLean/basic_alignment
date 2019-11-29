@@ -30,46 +30,6 @@
 \urlstyle{same}  % don't use monospace font for urls
 \usepackage{natbib}
 \bibliographystyle{apalike}
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -124,7 +84,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2019-11-28}
+    \date{2019-11-29}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -145,118 +105,442 @@
 \hypertarget{about-this-course}{%
 \chapter{About this course}\label{about-this-course}}
 
-This is a \emph{sample} book written in \textbf{Markdown}. You can use anything that Pandoc's Markdown supports, e.g., a math equation \(a^2 + b^2 = c^2\).
+In this short course we'll look at a method for running an alignment of sequence reads against a reference genome. The course is very brief and will show you how to use a program called \texttt{minimap2} and \texttt{samtools} to create a binary alignment file that you can use in further work.
 
-The \textbf{bookdown} package can be installed from CRAN or Github:
+I acknowledge that there are lots of other programs and methods - this course is \emph{not} meant to be comprehensive, it is meant to get you being productive. Seek out further advice if you need to run other programs. Do be encouraged though, 99 \% of what you learn here will be applicable to other tools for the same job (they all run in a \emph{very} similar manner) so this is a good place to start.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{install.packages}\NormalTok{(}\StringTok{"bookdown"}\NormalTok{)}
-\CommentTok{# or the development version}
-\CommentTok{# devtools::install_github("rstudio/bookdown")}
-\end{Highlighting}
-\end{Shaded}
+The course has two main parts - first we'll learn to do this `locally', that is to say on the computer that you are actually physically sitting at and have direct control over. Once we've done that and know how to run the actual programs then we shall switch to running the programs `remotely' on a HPC environment using a submission system that you have to log in to.
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading \texttt{\#}.
+\hypertarget{prerequisites}{%
+\section{Prerequisites}\label{prerequisites}}
 
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): \url{https://yihui.name/tinytex/}.
+This course assumes that you are familiar with the basics of running stuff from a command-line. You'll need to have some experience not lots. If you've done the TSL command-line course you'll know plenty
+
+For the first `local' part of this you'll need some software on your machines. Most bioinformatics software has to run on Unix style computers, which for most of us means Macs. The installation instructions below only apply to Macs.
+
+For the second part you'll need an HPC account. See the Bioinformatics Team to get one of these.
+
+\hypertarget{local-software-installation}{%
+\subsection{Local Software Installation}\label{local-software-installation}}
+
+We need to install \texttt{minimap2} and \texttt{samtools}. Installing bioinformatics software is often \emph{not} straightforward so we'll take a path of least resistance and install some tools that manage software for us. This is a roundabout way of doing things, but it greatly simplifies the hard parts and means that we can isolate our installations from the rest of our computer and not mess up anything already installed.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Get \texttt{conda}}
+  \texttt{conda} is an environment and package manager for software projects (initially Python - hence the name). Its purpose is to create a sandbox area on your computer where you can safely install software without it interfering or overwriting any of the existing software already on there. This safe space is called a conda `environment'. To install \texttt{conda}:
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    Click this link \url{https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.pkg} and wait for the package to download. When it has double-click it and go through the installation process.
+  \end{enumerate}
+\item
+  \textbf{Get \texttt{bioconda}}
+  \texttt{bioconda} is plugin that makes \texttt{conda} aware of the bioinformatics software we will need. To make \texttt{conda} aware of \texttt{bioconda}
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    Open \texttt{Terminal} and type the following:
+  \end{enumerate}
+\end{enumerate}
+
+\begin{verbatim}
+      conda config --add channels defaults
+      conda config --add channels bioconda
+      conda config --add channels conda-forge
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \textbf{Create a new environment}
+  We can now create our new safe space environment. Type in the following.
+\end{enumerate}
+
+\begin{verbatim}
+      conda create --name alignment_env
+\end{verbatim}
+
+This step can take a moment or two and nothing seems to happen for a while - be patient. Accept the defaults (answer \texttt{y} when questioned).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  \textbf{Activate the environment}
+  Everytime we want to use the new environment, including to install something into it, we have to activate it. That means each time we leave or start a new Terminal we need to type this into it
+\end{enumerate}
+
+\begin{verbatim}
+  conda activate alignment_env
+\end{verbatim}
+
+You should see the name at the \texttt{\$} prompt change, telling you that this Terminal is in the \texttt{alignment\_env} environment. If you ever can't find programs that you're sure you installed, it means that you probably didn't activate the right environment.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  \textbf{Install the alignment software \texttt{minimap2} and \texttt{samtools}}
+  All the steps up to now have been so we can do this one! Install each of the pieces of software in turn by using \texttt{conda} with:
+\end{enumerate}
+
+\begin{verbatim}
+      conda install minimap2
+      conda install samtools
+\end{verbatim}
+
+These steps can also take a while. Again accept the defaults (answer \texttt{y}).
+
+Now you are done! Everything is installed ready for you to work with. Next we need to get the sample data
+
+\hypertarget{sample-reference-genome-and-reads}{%
+\subsection{Sample reference genome and reads}\label{sample-reference-genome-and-reads}}
+
+You'll need this \href{sample_data/ecoli_genome.fa}{E.coli reference genome} file and this set of \href{sample_data/ecoli_pe.fq}{paired end reads}. Download them and put them into a folder on your machine. I suggest \texttt{Desktop/align\_tut}. I'll assume that is the directory you will work from.
+
+That's all you need to do the lesson. If you have any problems getting this going, then ask someone in the Bioinformatics Team and we'll help.
 
 \hypertarget{intro}{%
-\chapter{Introduction}\label{intro}}
+\chapter{The Alignment Pipeline}\label{intro}}
 
-You can label chapter and section titles using \texttt{\{\#label\}} after them, e.g., we can reference Chapter \ref{intro}. If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \ref{methods}.
+In this chapter we'll look at an overview standard paired-end read run of \texttt{minimap2}, what it outputs and how to manipulate the output with \texttt{samtools}.
 
-Figures and tables with captions will be placed in \texttt{figure} and \texttt{table} environments, respectively.
+The overall pipeline is very straightforward\ldots{}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mar =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\FloatTok{.1}\NormalTok{, }\FloatTok{.1}\NormalTok{))}
-\KeywordTok{plot}\NormalTok{(pressure, }\DataTypeTok{type =} \StringTok{'b'}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Align all reads to a reference
+\item
+  Filter badly scoring reads
+\item
+  Sort and compress output
+\end{enumerate}
 
-\begin{figure}
+\hypertarget{align-all-reads-to-a-reference}{%
+\section{Align all reads to a reference}\label{align-all-reads-to-a-reference}}
 
-{\centering \includegraphics[width=0.8\linewidth]{01-intro_files/figure-latex/nice-fig-1} 
+This is the main step, and with \texttt{minimap2} it can be accomplished with a single command-line. In this step each read is aligned against the reference, and its best aligning position found. That position, along with a metric of the quality of the single alignment is reported in a \texttt{SAM} format file.
 
-}
+\hypertarget{filter-out-badly-scoring-reads}{%
+\section{Filter out badly scoring reads}\label{filter-out-badly-scoring-reads}}
 
-\caption{Here is a nice figure!}\label{fig:nice-fig}
-\end{figure}
+This is the quality control step. We remove reads that don't have a good alignment score because in most contexts it means the read is a bad read with bad sequence in it. Of course in some contexts it isn't - it depends what you're aligning to what, but for the RNAseq situation or SNP calling situation where we expect the reads to be very like the reference this is appropriate. This step is done with \texttt{samtools}
 
-Reference a figure by its code chunk label with the \texttt{fig:} prefix, e.g., see Figure \ref{fig:nice-fig}. Similarly, you can reference tables generated from \texttt{knitr::kable()}, e.g., see Table \ref{tab:nice-tab}.
+\hypertarget{sort-and-compress-output}{%
+\section{Sort and compress output}\label{sort-and-compress-output}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}
-  \KeywordTok{head}\NormalTok{(iris, }\DecValTok{20}\NormalTok{), }\DataTypeTok{caption =} \StringTok{'Here is a nice table!'}\NormalTok{,}
-  \DataTypeTok{booktabs =} \OtherTok{TRUE}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+Once filtering is done and we have the set of reads we wish to retain we can take our output file and convert it to a sorted binary format that uses less disk space and is optimised for searching in downstream analysis. This step is a kind of housekeeping step that makes everything later easier. We do it with \texttt{samtools}
 
-\begin{table}
+\hypertarget{further-reading}{%
+\section{Further Reading}\label{further-reading}}
 
-\caption{\label{tab:nice-tab}Here is a nice table!}
-\centering
-\begin{tabular}[t]{rrrrl}
-\toprule
-Sepal.Length & Sepal.Width & Petal.Length & Petal.Width & Species\\
-\midrule
-5.1 & 3.5 & 1.4 & 0.2 & setosa\\
-4.9 & 3.0 & 1.4 & 0.2 & setosa\\
-4.7 & 3.2 & 1.3 & 0.2 & setosa\\
-4.6 & 3.1 & 1.5 & 0.2 & setosa\\
-5.0 & 3.6 & 1.4 & 0.2 & setosa\\
-\addlinespace
-5.4 & 3.9 & 1.7 & 0.4 & setosa\\
-4.6 & 3.4 & 1.4 & 0.3 & setosa\\
-5.0 & 3.4 & 1.5 & 0.2 & setosa\\
-4.4 & 2.9 & 1.4 & 0.2 & setosa\\
-4.9 & 3.1 & 1.5 & 0.1 & setosa\\
-\addlinespace
-5.4 & 3.7 & 1.5 & 0.2 & setosa\\
-4.8 & 3.4 & 1.6 & 0.2 & setosa\\
-4.8 & 3.0 & 1.4 & 0.1 & setosa\\
-4.3 & 3.0 & 1.1 & 0.1 & setosa\\
-5.8 & 4.0 & 1.2 & 0.2 & setosa\\
-\addlinespace
-5.7 & 4.4 & 1.5 & 0.4 & setosa\\
-5.4 & 3.9 & 1.3 & 0.4 & setosa\\
-5.1 & 3.5 & 1.4 & 0.3 & setosa\\
-5.7 & 3.8 & 1.7 & 0.3 & setosa\\
-5.1 & 3.8 & 1.5 & 0.3 & setosa\\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  FastQ quality scores
+\item
+  Alignment scores
+\item
+  Why minimap2 and not bwa bowtie
+\end{enumerate}
 
-You can write citations, too. For example, we are using the \textbf{bookdown} package \citep{R-bookdown} in this sample book, which was built on top of R Markdown and \textbf{knitr} \citep{xie2015}.
+\hypertarget{running-minimap2}{%
+\chapter{\texorpdfstring{Running \texttt{minimap2}}{Running minimap2}}\label{running-minimap2}}
 
-\hypertarget{methods}{%
-\chapter{Methods}\label{methods}}
+Running \texttt{minimap2} takes only one step. Assuming we've already \texttt{cd}'d into the directory with the reads and reference we can use this command
 
-We describe our methods in this chapter.
+\begin{verbatim}
+  minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq > aln.sam
+\end{verbatim}
+
+Try running that and see what happens\ldots{} You should get an output file in the working directory called \texttt{aln.sam}. On my machine this takes just a few seconds to run.
+
+Let's look at the command in detail.
+
+\hypertarget{the-minimap2-command-and-options}{%
+\section{\texorpdfstring{The \texttt{minimap2} command and options}{The minimap2 command and options}}\label{the-minimap2-command-and-options}}
+
+First we get this
+
+\begin{verbatim}
+  minimap2
+\end{verbatim}
+
+which is the name of the actual program we intend to run, so it isn't surprising that it comes first. The rest of the command are options (sometimes called arguments) telling the program how to behave and what it needs to know. Next up is this
+
+\begin{verbatim}
+           -ax sr
+\end{verbatim}
+
+which gives option \texttt{a} meaning print out SAM format data. And option \texttt{x} meaningwe wish to use a preset parameter set. The preset we wish to use comes after \texttt{x} and is \texttt{sr}, which stands for \texttt{short\ reads} and tells \texttt{minimap2} to use settings for short reads against a long genome. Next is this
+
+\begin{verbatim}
+                   ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq
+\end{verbatim}
+
+which are the input files in the `reference' `left read' `right read' order. Finally, we have
+
+\begin{verbatim}
+                                                                       > aln.sam
+\end{verbatim}
+
+which is the \texttt{\textgreater{}} output redirect operator and the name of an output file to write to. This bit specifies where the output goes.
+
+So the structure of the \texttt{minimap2} command (like many other commands) is simply \texttt{program\_name\ options\ input\ output}.
+
+And this one command is all we need for a basic alignment with \texttt{minimap2}. We can now move on to the next step in the pipeline.
+
+\hypertarget{further-reading-1}{%
+\section{Further Reading}\label{further-reading-1}}
+
+The \texttt{\textgreater{}} operator.
+\texttt{minimap2} further instructions and github
+
+\hypertarget{filtering-badly-aligned-reads}{%
+\chapter{Filtering Badly Aligned Reads}\label{filtering-badly-aligned-reads}}
+
+Once we have an alignment, the next step is often to throw out the reads that align badly or not in pairs as we we expect. To do this we need to look at the alignments and assess them one-by-one. We'll need first to have some understanding of the output from our alignment, in this case \texttt{aln.sam} a SAM format file.
+
+\hypertarget{sam-format}{%
+\section{SAM Format}\label{sam-format}}
+
+Alignments are generally stored in SAM format, a standard for describing how each read aligned one-by-one. Each line carries the results for a single read. Let's examine a single reads alignment. Recall that we can look at one line in a file called \texttt{aln.sam} using \texttt{tail\ -n\ 1\ aln.sam} (this gives the bottom line in the file). Running this prints the following
+
+\begin{verbatim}
+NC_011750.1_1004492_1005000_1:0:0_3:0:0_1869f   147 NC_011750.1 1004931 33  70M =   1004492 -509 TTATATTATTTGGGTTCCTGTGCTGGCGGCTATCTGGAGTATTGGCAGCCTGACAAGCAATGCCTACAAA 2222222222222222222222222222222222222222222222222222222222222222222222  NM:i:3  ms:i:110    AS:i:110    nn:i:0 tp:A:P   cm:i:2  s1:i:59 s2:i:0  de:f:0.0429 rl:i:0
+\end{verbatim}
+
+On close inspection we can see this mess (which is only a single line) contains things like the read name, the position it maps to on the reference sequence, the read sequence, and lots of other strange things like \texttt{70M} and \texttt{de:f:0.0429}. The important thing to note is that these weird things are encoded quality information for this alignment, so we can - if we know how to manipulate those codes - select read alignment of the proper quality.
+
+Thankfully the program \texttt{samtools} makes this easy for us.
+
+\hypertarget{samtools}{%
+\section{\texorpdfstring{\texttt{samtools}}{samtools}}\label{samtools}}
+
+We can accomplish read filtering with the following command.
+
+\begin{verbatim}
+samtools view -S -h -q 25 -f 3 aln.sam > aln.filtered.sam
+\end{verbatim}
+
+Try running that and looking at the output file that is generated. You should have another SAM format file called \texttt{aln.filtered.sam} in your working directory.
+
+Let's take a look at that command in detail
+
+\hypertarget{the-samtools-command-and-options}{%
+\section{\texorpdfstring{The \texttt{samtools} command and options}{The samtools command and options}}\label{the-samtools-command-and-options}}
+
+Straight away, the command seems to fit the familiar \texttt{program\ name} \texttt{options} \texttt{files} pattern. It starts with
+
+\begin{verbatim}
+samtools
+\end{verbatim}
+
+which is the program name. Then we get the options
+
+\begin{verbatim}
+          view -S -h -q 25 -f 3
+\end{verbatim}
+
+The first option to \texttt{samtools} must be the name of the sub-program to run. There are lots of these as \texttt{samtools} is a suite of sub-programs. \texttt{view} is the option for working with alignments directly. The second option \texttt{-S} tells \texttt{samtools\ view} that we are handing it a SAM format file (soon we will hand it a different type) and \texttt{-h} tells it to show the header as well (each SAM file has a header that we sometimes don't want). The next two options are the important ones. \texttt{-q\ 25} will remove reads with a mapping quality (a measure of how well a read is aligned) lower than 25 (a reasonable score) and \texttt{-f\ 3} is a `flag' a really complex way of encoding alignment attributes (see Further Reading for more details). The important thing is that \texttt{3} means \texttt{keep\ reads\ that\ are\ paired\ and\ whose\ pair\ is\ mapped\ too}.
+
+At the end of the command is the input and output file information
+
+\begin{verbatim}
+                               aln.sam > aln.filtered.sam
+\end{verbatim}
+
+which means the input file is our \texttt{aln.sam} and that the output should be redirected to \texttt{aln.filtered.sam}
+
+\hypertarget{checking-the-filtering}{%
+\section{Checking the filtering}\label{checking-the-filtering}}
+
+As an exercise to show that we did filter stuff out lets compare the input \texttt{aln.sam} file with the output \texttt{aln.filtered.sam} file. Recall that \texttt{wc\ -l} will give us the number of lines in a text file. Run it like this, on both files at once
+
+\begin{verbatim}
+wc -l aln.sam aln.filtered.sam
+\end{verbatim}
+
+I get this as output
+
+\begin{verbatim}
+  200002 aln.sam
+  166905 aln.filtered.sam
+  366907 total
+\end{verbatim}
+
+The number of lines (alignments) in the filtered files is less than that in the unfiltered, so we can casually assume the command worked.
+
+And that's all there is to getting the reads filtered. In real-life you have many options for filtering and you may choose to do it at other points (for instance, lots of RNAseq quantification programs will allow you to filter when you use them), but the process will be similar and take advantage of the same mapping quality and flag metrics you've been introduced to here.
+
+\hypertarget{are-we-done}{%
+\section{Are we done?}\label{are-we-done}}
+
+On the face of it then, it looks like we've come to the end of what we intended to do - we did an alignment, and we've filtered out the poor ones. In practice though, we'll be dealing with many millions of reads, many files of many Gb size. This complicates the housekeeping we have to do, not the procedure we've learned \emph{per se}, so before we jump to the HPC we need to look at that. That's the next chapter.
+
+\hypertarget{further-reading-2}{%
+\section{Further Reading}\label{further-reading-2}}
+
+\hypertarget{sam-format-1}{%
+\subsection{SAM Format}\label{sam-format-1}}
+
+I only really alluded to the SAM format above, but there's a lot to it. This \href{https://en.wikipedia.org/wiki/SAM_(file_format)}{Wikipedia page} gives a lot of detail.
+
+\hypertarget{mapping-quality}{%
+\subsection{Mapping Quality}\label{mapping-quality}}
+
+A metric that describes how well overall the read aligned, it takes into account not just the alignment, but the nubmer of other possible alignments that were rejected. Consider that a read mapping well equally at a number of places in the genome cannot be said to be mapping well at all. Different aligners make arbitrary decisions about how to score such alignments. See this short \href{https://genome.sph.umich.edu/wiki/Mapping_Quality_Scores}{summary} for information on how it can be calculated.
+
+\hypertarget{flags}{%
+\subsection{Flags}\label{flags}}
+
+The flags option is the most powerful way to describe a filter to \texttt{samtools\ view}, it is also really complicated. The number you pass (e.g \texttt{-f\ 3}) is calculated as a sum of lots of options. The way they're are described in the \href{https://en.wikipedia.org/wiki/SAM_(file_format)\#Bitwise_Flags}{documentation} is a bit more complex than I want to go into, but there are helpful web-apps that can simplify things - \href{https://broadinstitute.github.io/picard/explain-flags.html}{try this one}
+
+\hypertarget{connecting-programs-and-compressing-output}{%
+\chapter{Connecting Programs and Compressing output}\label{connecting-programs-and-compressing-output}}
+
+Now that we've been through the whole alignment and filtering pipeline, let's look at the output. Specifically lets compare the sizes of the files we used. Recall that we can do that with \texttt{ls\ -alh}
+
+On my folder I get this (some columns and files removed for clarity)
+
+\begin{verbatim}
+49M 29 Nov 10:46 aln.filtered.sam
+59M 28 Nov 16:28 aln.sam
+5.0M  2 Jul 15:04 ecoli_genome.fa
+18M 28 Nov 15:53 ecoli_left_R1.fq
+18M 28 Nov 15:53 ecoli_right_R2.fq
+\end{verbatim}
+
+The file sizes are in the left-most column. Check out the relative size of the two read files (18M each) and the alignment SAM files (59M and 49M). The output file is much larger than the input. This has implications for storage when the files are really large (many GB) and there are lots of them. The disk space gets used really quickly. Consider also the redundancy we have - that \texttt{aln.filtered.sam} is the one we're interested in, not the \texttt{aln.sam} so it is taking up unnecesary disk space. It's easy to see that when you are doing a real experiment with lots of samples and hundreds of GB file size, you're going to eat up disk space. Also larger files take longer to process, so you're going to have a long wait. This has implications too when you get to later stages in the analysis
+
+In this chapter we're going to look at a technique for reducing those housekeeping overheads and speeding things up.
+
+\hypertarget{bam-files}{%
+\section{BAM Files}\label{bam-files}}
+
+BAM files are a binary compressed version of SAM files. They contain identical information in a more computer friendly way. This means that people can't read it, but it is rare in practice that you'll directly read much of a SAM file with your own eyes. Let's look at the command to do that
+
+\begin{verbatim}
+samtools view -S -b aln.filtered.sam > aln.filtered.bam
+\end{verbatim}
+
+Again we're using \texttt{samtools\ view} and our options are \texttt{-S} which means SAM format input and the new one is \texttt{-b} means BAM format output. Our input file is \texttt{aln.filtered} and we're sending the output to \texttt{aln.filtered.bam}.
+
+If we check the files with \texttt{ls\ -alh} now we get
+
+\begin{verbatim}
+9.2M 29 Nov 14:05 aln.filtered.bam
+49M 29 Nov 10:46 aln.filtered.sam
+59M 28 Nov 16:28 aln.sam
+5.0M  2 Jul 15:04 ecoli_genome.fa
+18M 28 Nov 15:53 ecoli_left_R1.fq
+18M 28 Nov 15:53 ecoli_right_R2.fq
+\end{verbatim}
+
+The BAM file is about a fifth of the size of the SAM file. So we can save space in this way. We have another trick up our sleeve though. We can connect together command lines, so that we don't have to create intermediate files - this reduces the number of files we have to save. We can do this by using something called pipes.
+
+\hypertarget{connecting-program-input-and-output-with-pipes}{%
+\section{Connecting Program Input and Output With Pipes}\label{connecting-program-input-and-output-with-pipes}}
+
+Most command line programs print their results straight out without sending it to a file. This seems strange, but it adds a lot of flexibility. If also set up our programs to read in this output then we can connect them together. We can do this with pipes. The usual way to do this is to use the \texttt{\textbar{}} operator. Let's look at a common example.
+
+Here we'll use the command \texttt{ls} and \texttt{shuf} to see how this works. We know \texttt{ls} will `list' our directory contents, \texttt{shuf} shuffles lines of text sent to it. If we use \texttt{\textbar{}} in between we can connect the output of one to the other. Try running \texttt{ls} a couple of times to verify you get the same output both times and then try this
+a few times
+
+\begin{verbatim}
+ls | shuf
+\end{verbatim}
+
+you should get different output everytime. The important thing to note is that \texttt{shuf} is doing its job on the data sent from \texttt{ls}, which sends consistent data every time. We don't have to create an intermediate file for \texttt{shuf} to work from. The \texttt{\textbar{}} character joing two commands is the key.
+
+We can apply this to our \texttt{minimap2} and \texttt{samtools} commands.
+
+\hypertarget{from-reads-to-filtered-alignments-in-one-step}{%
+\section{From reads to filtered alignments in one step}\label{from-reads-to-filtered-alignments-in-one-step}}
+
+So let's try reducing the original alignment pipeline to one step with pipes. We'll work in the BAM file bit later.
+
+Simply take away the output file names (except the last one!) and replace with pipes. It looks like this
+
+\begin{verbatim}
+minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq | samtools view -S -h -q 25 -f 3 > aln.filtered.from_pipes.sam
+\end{verbatim}
+
+when you do \texttt{ls\ -alh} you should see the new \texttt{aln.filtered.from\_pipes.sam} file, its size is identical to the file we generated when we created the intermediate \texttt{aln.sam} file, but this time we didnt need to, saving that disk space.
+
+\hypertarget{from-reads-to-filtered-alignments-in-a-bam-file-in-one-step}{%
+\subsection{From reads to filtered alignments in a BAM file in one step}\label{from-reads-to-filtered-alignments-in-a-bam-file-in-one-step}}
+
+Let's modify the command to give us BAM not SAM, saving a further step. We already know that \texttt{samtools\ view} can output BAM instead of SAM, so lets add that option (\texttt{-b}) in to the \texttt{samtools} part.
+
+\begin{verbatim}
+minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq | samtools view -S -h -b -q 25 -f 3 > aln.filtered.from_pipes.bam
+\end{verbatim}
+
+If you check the files with \texttt{ls\ -alh} now you should see that you have the new \texttt{aln.filtered.from\_pipes.bam} file with no extra intermediate file and the smallest possible output file. Congratulations, you know now the fastest and most optimal way to make alignments and filter them.
+
+\hypertarget{sorting-bam-files}{%
+\section{Sorting BAM files}\label{sorting-bam-files}}
+
+In practice a BAM file of alignments needs to be ordered with the alignments at the start of the first chromosome at the start of the file and the alignments on the end of the last chromosome at the end of the file. This is for computational reasons we don't need to worry about, but it does mean we need to do another sorting step to make our files useful downstream.
+
+Because all the alignments need to be present before we can start we can't use the pipe technique above. So we use an input and output file. The command is \texttt{samtools\ sort} and looks like this.
+
+\begin{verbatim}
+samtools sort aln.filtered.from_pipes.bam -o aln.filtered.from_pipes.sorted.bam
+\end{verbatim}
+
+Doing \texttt{ls\ -alh} shows a new sorted BAM \texttt{aln.filtered.from\_pipes.sorted.bam} that contains the same information but is actually a little smaller due to being sorted. We can safely delete the unsorted version of the BAM file.
+
+\hypertarget{automatically-deleting-the-unsorted-bam}{%
+\subsection{Automatically deleting the unsorted BAM}\label{automatically-deleting-the-unsorted-bam}}
+
+If the sorting goes fine, we have two BAM files with essentially the same information and don't need the unsorted file. We can of course remove this with \texttt{rm\ aln.filtered.from\_pipes}. A neat space saving trick is to combine the \texttt{rm} step with the successful completion of the sort. We can do this by joining the commands with \texttt{\&\&}.
+
+That looks like this
+
+\begin{verbatim}
+samtools sort aln.filtered.from_pipes.bam -o aln.filtered.from_pipes.sorted.bam && rm aln.filtered.from_pipes.bam
+\end{verbatim}
+
+The \texttt{\&\&} doesn't connect the data between the two commands, it just doesn't let the second one start until the first one finishes successfully (computers have an internal concept of whether a command finished properly).
+
+This means if the \texttt{samtools\ sort} goes wrong the \texttt{rm} part will not run and the input file won't be deleted so you won't have to remake it. This is especially useful later when we wrap all this into an automatic script.
+
+\hypertarget{indexing-the-sorted-bam}{%
+\section{Indexing the sorted BAM}\label{indexing-the-sorted-bam}}
+
+Many downstream applications need the BAM file to have an index, so they can quickly jump to a particular part of the reference chromosome. This is a tiny file and we usually don't need to worry about it. To generate it use \texttt{samtools\ index}
+
+\begin{verbatim}
+samtools index aln.filtered.from_pipes.sorted.bam
+\end{verbatim}
+
+Using \texttt{ls\ -lah} we can see a tiny file called \texttt{aln.filtered.from\_pipes.sorted.bam.bai}, this is the index.
+
+\hypertarget{further-reading-3}{%
+\section{Further Reading}\label{further-reading-3}}
+
+For a primer on some more aspects of \texttt{samtools} see this \href{http://quinlanlab.org/tutorials/samtools/samtools.html}{tutorial}
 
 \hypertarget{final-words}{%
 \chapter{Final Words}\label{final-words}}
 
 We have finished a nice book.
-
-\hypertarget{literature}{%
-\chapter{Literature}\label{literature}}
-
-Here is a review of existing methods.
-
-\hypertarget{applications}{%
-\chapter{Applications}\label{applications}}
-
-Some \emph{significant} applications are demonstrated in this chapter.
-
-\hypertarget{example-one}{%
-\section{Example one}\label{example-one}}
-
-\hypertarget{example-two}{%
-\section{Example two}\label{example-two}}
 
 \bibliography{book.bib,packages.bib}
 
