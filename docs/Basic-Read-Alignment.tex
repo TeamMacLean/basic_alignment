@@ -537,10 +537,93 @@ Using \texttt{ls\ -lah} we can see a tiny file called \texttt{aln.filtered.from\
 
 For a primer on some more aspects of \texttt{samtools} see this \href{http://quinlanlab.org/tutorials/samtools/samtools.html}{tutorial}
 
-\hypertarget{final-words}{%
-\chapter{Final Words}\label{final-words}}
+\hypertarget{automating-the-process}{%
+\chapter{Automating The Process}\label{automating-the-process}}
 
-We have finished a nice book.
+We now know everything we need to do an alignment of reads against a reference in an efficient way. What's next is to consider that this process needs to be done for every set of reads you might generate. That's a lot of typing of the same thing over and over, which can get tedious. In this section we'll look at how we can automate the process to make it less repetitive using a script.
+
+\hypertarget{shell-scripts}{%
+\section{Shell scripts}\label{shell-scripts}}
+
+Scripts that contain commands we usually run in the Terminal are called shell scripts. They're generally just the command we want to do one after another and saved in a file. We can then run that file as if it were a command and all the commands we put in the file are
+
+Shell scripts must be a simple text file, so you can't create them in programs like Word, you'll need a special text editor. On most systems we have one called \texttt{nano} built into the Terminal.
+
+\hypertarget{using-nano-to-create-a-shell-script}{%
+\subsection{\texorpdfstring{Using \texttt{nano} to create a shell script}{Using nano to create a shell script}}\label{using-nano-to-create-a-shell-script}}
+
+To open a file in \texttt{nano} type \texttt{nano} and the name of the file, if the file doesn't exist it will be created.
+
+\begin{verbatim}
+nano my_script.sh
+\end{verbatim}
+
+Will create a file and open it. To save and exit type press \texttt{Ctrl} then \texttt{X} (thats what \texttt{\^{}X} means in the help at the bottom. You can enter your script in here. Remember its not a word processor, its a Terminal text editor, so you have to use the mouse to move round and cutting and pasting is a bit clunky.
+
+\hypertarget{creating-a-script-that-automates-our-alignment-pipeline.}{%
+\section{Creating a script that automates our alignment pipeline.}\label{creating-a-script-that-automates-our-alignment-pipeline.}}
+
+Let's enter our script into \texttt{nano}. We'll do it as we did in the earlier chapters, but we'll change file names to make it clear which files are coming from the script.
+
+First, create a script called \texttt{do\_aln.sh}
+
+\begin{verbatim}
+nano do_aln.sh
+\end{verbatim}
+
+Once \texttt{nano} opens, add the following into it
+
+\begin{verbatim}
+minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq | samtools view -S -h -b -q 25 -f 3 > aln.script.bam
+samtools sort aln.script.bam -o aln.script.sorted.bam && rm aln.script.bam
+samtools index aln.script.sorted.bam
+\end{verbatim}
+
+That's all the steps we want to do. Use \texttt{Ctrl-X} to save the changes to the file.
+
+\hypertarget{running-the-script}{%
+\section{Running the script}\label{running-the-script}}
+
+To run the script we use the \texttt{sh} command and the script name. Try
+
+\begin{verbatim}
+sh do_aln.sh
+\end{verbatim}
+
+You should see progress from the script as it does each step in turn. When it's done you can \texttt{ls\ -alh} to see the new sorted BAM file from the script.
+
+Congratulations! You just automated an entire analysis pipeline!
+
+\hypertarget{running-on-different-input-files}{%
+\section{Running on different input files}\label{running-on-different-input-files}}
+
+So our script is great but the input filenames will be the same every time we run it meaning we'd need to go through the whole file and change them which is error prone. Also the output files are the same each time, meaning we could accidentally overwrite any previous work in there, which is frustrating. We can overcome this with a couple of simple changes in our script that make use of variables.
+
+Variables are place holders for values that the script will replace when it runs. Consider these two commands
+
+\begin{verbatim}
+MY_MESSAGE="Hello, world!"
+echo $MY_MESSAGE
+\end{verbatim}
+
+Recall that \texttt{echo} just prints whatever follows it. Try running this, you get \texttt{Hello,\ world!} which shows that the process created a variable called \texttt{MY\_MESSAGE} and stored the message in it. When used by a command the \texttt{\$} showed the command that it should use the message stored in the variable and printed \texttt{Hello,\ world!}. We can use this technique in our scripts. Note the command \texttt{MY\_MESSAGE="Hello,\ world!"} must not have spaces around the equals sign.
+
+Now we can expand our script to take advantage. Look at this script.
+
+\begin{verbatim}
+LEFT_READS="ecoli_left_R1.fq"
+RIGHT_READS="ecoli_right_R2.fq"
+REFERENCE_SEQUENCE="ecoli_genome.fa"
+SAMPLE_NAME="ecoli"
+
+minimap2 -ax sr $REFERENCE_SEQUENCE $LEFT_READS $RIGHT_READS | samtools view -S -h -b -q 25 -f 3 > $SAMPLE_NAME.bam
+samtools sort $SAMPLE_NAME.bam -o $SAMPLE_NAME.sorted.bam && rm $SAMPLE_NAME.bam
+samtools index $SAMPLE_NAME.sorted.bam
+\end{verbatim}
+
+Right at the top we create a variable for each of our read files (\texttt{LEFT\_READS} and \texttt{RIGHT\_READS}), our reference files (\texttt{REFERENCE\_SEQUENCE}) and a unique sample name (\texttt{ecoli}). These variables get used whenever we need them, saving us from typing the information over and over. The practical upshot of this being that we only need to change the script in one place every time we reuse it for a different sample and set of reads.
+
+Now try this out. Save the new script in a file called \texttt{do\_aln\_variables.sh} and run it as before with \texttt{sh\ do\_aln\_variables.sh}. When it's run you should see an output called \texttt{ecoli.sorted.bam}.
 
 \bibliography{book.bib,packages.bib}
 
