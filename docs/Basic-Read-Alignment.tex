@@ -84,7 +84,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2019-11-29}
+    \date{2019-12-02}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -207,7 +207,7 @@ Now you are done! Everything is installed ready for you to work with. Next we ne
 \hypertarget{sample-reference-genome-and-reads}{%
 \subsection{Sample reference genome and reads}\label{sample-reference-genome-and-reads}}
 
-You'll need this \href{sample_data/ecoli_genome.fa}{E.coli reference genome} file and this set of \href{sample_data/ecoli_pe.fq}{paired end reads}. Download them and put them into a folder on your machine. I suggest \texttt{Desktop/align\_tut}. I'll assume that is the directory you will work from.
+You'll need this \href{https://github.com/TeamMacLean/basic_alignment/blob/master/sample_data/ecoli_genome.fa}{E.coli reference genome} file and this set of paired end reads \href{https://github.com/TeamMacLean/basic_alignment/blob/master/sample_data/ecoli_left_R1.fq}{left read} \href{https://github.com/TeamMacLean/basic_alignment/blob/master/sample_data/ecoli_right_R2.fq}{right read} . Download them and put them into a folder on your machine. I suggest \texttt{Desktop/align\_tut}. I'll assume that is the directory you will work from.
 
 That's all you need to do the lesson. If you have any problems getting this going, then ask someone in the Bioinformatics Team and we'll help.
 
@@ -247,16 +247,15 @@ Once filtering is done and we have the set of reads we wish to retain we can tak
 \hypertarget{further-reading}{%
 \section{Further Reading}\label{further-reading}}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  FastQ quality scores
-\item
-  Alignment scores
-\item
-  Why minimap2 and not bwa bowtie
-\end{enumerate}
+\hypertarget{fastq-quality-scores}{%
+\subsection{FastQ quality scores}\label{fastq-quality-scores}}
+
+Typically the reads we use will be in the FastQ format, this is a two line format that encodes not only the sequence read, but the `believability' of each base. You can see more \href{https://en.wikipedia.org/wiki/FASTQ_format}{here}
+
+\hypertarget{why-minimap2-and-not-bwabowtieother}{%
+\subsection{Why minimap2 and not bwa\textbar{}bowtie\textbar{}other}\label{why-minimap2-and-not-bwabowtieother}}
+
+You may have heard of other aligners and that people in your group are using them. \texttt{minimap2} is currently the quickest and most accurate of all the aligners and has general ability with all modern sequence types. Those using others (in particular bwa and bowtie) are pretty out of date. bwa \emph{was} a favourite for a long time, but has been superceded. The same author created both bwa and minimap2 and minimap2 was written to address issues with bwa.
 
 \hypertarget{running-minimap2}{%
 \chapter{\texorpdfstring{Running \texttt{minimap2}}{Running minimap2}}\label{running-minimap2}}
@@ -307,8 +306,15 @@ And this one command is all we need for a basic alignment with \texttt{minimap2}
 \hypertarget{further-reading-1}{%
 \section{Further Reading}\label{further-reading-1}}
 
-The \texttt{\textgreater{}} operator.
-\texttt{minimap2} further instructions and github
+\hypertarget{the-operator}{%
+\subsection{\texorpdfstring{The \texttt{\textgreater{}} operator}{The \textgreater{} operator}}\label{the-operator}}
+
+The \texttt{\textgreater{}} symbol is actually not part of the \texttt{minimap2} command at all, it is a general shortcut that means something like `catch the output from the process on the left and put it in the file on the right\texttt{.\ Think\ of\ the}\textgreater{}` as being a physical funnel catching the datastream! Because it's a general operator and not an option in a program, we can almost always use'\textgreater{}' to make output files. You'll see it pop up quite often
+
+\hypertarget{minimap2-further-instructions-and-github}{%
+\subsection{\texorpdfstring{\texttt{minimap2} further instructions and github}{minimap2 further instructions and github}}\label{minimap2-further-instructions-and-github}}
+
+The commands given here for \texttt{minimap2} are just a small selection of what are available. You can see the user guide at \href{https://github.com/lh3/minimap2}{GitHub}
 
 \hypertarget{filtering-badly-aligned-reads}{%
 \chapter{Filtering Badly Aligned Reads}\label{filtering-badly-aligned-reads}}
@@ -624,6 +630,144 @@ samtools index $SAMPLE_NAME.sorted.bam
 Right at the top we create a variable for each of our read files (\texttt{LEFT\_READS} and \texttt{RIGHT\_READS}), our reference files (\texttt{REFERENCE\_SEQUENCE}) and a unique sample name (\texttt{ecoli}). These variables get used whenever we need them, saving us from typing the information over and over. The practical upshot of this being that we only need to change the script in one place every time we reuse it for a different sample and set of reads.
 
 Now try this out. Save the new script in a file called \texttt{do\_aln\_variables.sh} and run it as before with \texttt{sh\ do\_aln\_variables.sh}. When it's run you should see an output called \texttt{ecoli.sorted.bam}.
+
+\hypertarget{running-an-alignment-on-the-hpc}{%
+\chapter{Running an alignment on the HPC}\label{running-an-alignment-on-the-hpc}}
+
+In this chapter we'll look at how to run the alignment on an HPC cluster. First, we need to know a few things about that HPC before we can begin.
+
+\hypertarget{an-hpc-is-a-group-of-slave-computers-under-control-of-a-master-computer}{%
+\section{An HPC is a group of slave computers under control of a master computer}\label{an-hpc-is-a-group-of-slave-computers-under-control-of-a-master-computer}}
+
+Most of the computers in an HPC cluster are really just there to do what one other computer tells them. They cannot be contacted directly (by the normal user) and they have very little software already on them. As the user you must get a master computer to tell them what to do. A key thing about an HPC cluster is that all the computers share one massive hard-drive. Look at the diagram below.
+
+\includegraphics{hpc_graphic.png}
+
+It shows the computer you are working at, the master computer and it's relation to the slave computers and the hard disk. Note that there is no way for you to contact the slaves directly, even though the slaves (or more properly `worker nodes') are where the actual job runs. So the workflow for running an HPC job goes like this
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Log into master (more usually called `submission node' )
+\item
+  Prepare a task for the submission node to send to the nodes
+\item
+  Submit the task to the submission node
+\item
+  Wait for the submission node to send the job to the worker nodes
+\item
+  Wait for the worker nodes to finish the job
+\end{enumerate}
+
+In the rest of this chapter we'll look at how to do these steps
+
+\hypertarget{logging-into-the-submission-node}{%
+\section{Logging into the submission node}\label{logging-into-the-submission-node}}
+
+This is pretty straightforward, you need to use the \texttt{ssh} command to make a connection between your computer and the submission node. The TSL submission node has the address \texttt{hpc.tsl.ac.uk} so use this command
+
+\begin{verbatim}
+ssh hpc.tsl.ac.uk
+\end{verbatim}
+
+You'll be asked for a user name and password, it's your usual NBI details. When it's done you should see something like this
+
+\includegraphics{login.png}
+
+This terminal is now working on the submission node (you can tell from the prompt \texttt{macleand@TSL-HPC})
+
+\hypertarget{preparing-a-job}{%
+\section{Preparing a job}\label{preparing-a-job}}
+
+To run a job we need to create a submission script. \texttt{nano} is available on the submission node, so we can use that. But what goes inside? Here's a typical one.
+
+\begin{verbatim}
+#!/bin/bash
+
+#SBATCH -p tsl-short
+#SBATCH --mem=16G
+#SBATCH -J alignments
+#SBATCH --mail-type=begin,end,fail
+#SBATCH --mail-user=dan.maclean@tsl.ac.uk
+
+source minimap2-2.5
+source samtools-1.9
+
+srun minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq | samtools view -S -h -b -q 25 -f 3 > aln.script.bam
+\end{verbatim}
+
+Not much of this is going to be familiar, but it isn't complicated.
+
+The first line of this file \texttt{\#!/bin/bash} is one that should always be there. Always put it in and never worry about it again. It just tells the computer this file is a script.
+
+\hypertarget{the-sbatch-options}{%
+\subsection{\texorpdfstring{The \texttt{\#SBATCH} options}{The \#SBATCH options}}\label{the-sbatch-options}}
+
+The second block of statements, all beginning \texttt{\#SBATCH} are the resource options for the job. It tells the submission node what resources the job needs to run. These need to go at the top of the script. Let's look at them individually.
+
+\hypertarget{sbatch--p}{%
+\subsubsection{\texorpdfstring{\texttt{\#SBATCH\ -p}}{\#SBATCH -p}}\label{sbatch--p}}
+
+This tells the submission node which queue (or partition in the jargon) the job should run on. We have three basic partitions \texttt{tsl-short}, \texttt{tsl-medium} and \texttt{tsl-long}. The main difference is that jobs that run for a short time shouldn't be held back by jobs that run for ages, so the submission node uses this to run all of its jobs optimally.
+
+\hypertarget{sbatch---mem}{%
+\subsubsection{\texorpdfstring{\texttt{\#SBATCH\ -\/-mem=}}{\#SBATCH -\/-mem=}}\label{sbatch---mem}}
+
+This tells the submission node how much memory your job will need to run. Jobs that exceed their stated memory by too much are killed. REquestiing the lowest possible memory means your job will be executed more quickly. Memory is requested in units of \texttt{G} gigabytes, usually.
+
+\hypertarget{sbatch--j}{%
+\subsubsection{\texorpdfstring{\texttt{\#SBATCH\ -J}}{\#SBATCH -J}}\label{sbatch--j}}
+
+This is a helpful little name for you to identify your jobs with. eg \texttt{\#SBATCH\ -J\ my\_jobs}
+
+\hypertarget{sbatch---mail-type}{%
+\subsubsection{\texorpdfstring{\texttt{\#SBATCH\ -\/-mail-type=}}{\#SBATCH -\/-mail-type=}}\label{sbatch---mail-type}}
+
+These are the times during the job that the submission node will email you to let you know of a status change in your job. Always use this option as presented for quickest information.
+
+\hypertarget{sbatch---mail-user}{%
+\subsubsection{\texorpdfstring{\texttt{\#SBATCH\ -\/-mail-user}}{\#SBATCH -\/-mail-user}}\label{sbatch---mail-user}}
+
+This is simply the address your update emails will be sent to.
+
+\hypertarget{the-source-options}{%
+\subsection{\texorpdfstring{The \texttt{source} options}{The source options}}\label{the-source-options}}
+
+The next lines all begin with the word \texttt{source} followed by some software name. No software is loaded into the worker nodes by default, so we need to say which tools we want to use. Do this by using the \texttt{source} keyword followed by the software name, e.g \texttt{source\ BLAST-2.2.2}. Many versions of the same tool are available on the HPC, and are differentiated by the version number at the end. You can see which software is available to source by typing \texttt{source} then hitting the tab key twice. It should give a very long list of tools.
+
+\hypertarget{the-srun-command}{%
+\subsection{\texorpdfstring{The \texttt{srun} command}{The srun command}}\label{the-srun-command}}
+
+Finally, we get to the actual commands we want to run. This is exactly as we did before but with the command \texttt{srun} in front.
+
+\hypertarget{submitting-with-sbatch}{%
+\section{\texorpdfstring{Submitting with \texttt{sbatch}}{Submitting with sbatch}}\label{submitting-with-sbatch}}
+
+All of this information should be saved in a single script. You can call it what you want, but use the extension \texttt{.sh}. Once you've got this script, you can ask the submission node to add your job to the queue with \texttt{sbatch}. This doesn't go in the script, it goes on the command-line, so if you'd added all the details above to a file called \texttt{do\_my\_alignments.sh} you can submit it by typing \texttt{sbatch\ do\_my\_alignments.sh}
+
+\hypertarget{checkout-tasks}{%
+\section{Checkout tasks}\label{checkout-tasks}}
+
+So that's all you need to know to submit a job. Let's test how that works by creating a simple job and running that. Then we'll try a bigger alignment job. These are
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Create a job using a submission script that runs this command \texttt{date}. Check what the \texttt{date} command does on the command line. Note that it runs very quickly (is a short job) and uses very little memory (\textless{} 1G).
+\item
+  What happened to the output? Check the contents of your directory when the job is done and examine the new files (\texttt{less} is useful for this).
+\item
+  Explicitly create an output file by running this command through the HPC instead \texttt{date\ \textgreater{}\ date.txt}. What is the contents of the folder now? What effect did explicitly naming an output file have. What is the \texttt{slurm\_xxxx.out} file for?
+\item
+  Run an alignment job using the information we learned in the earlier chapters. The reference file \texttt{ecoli\_genome.fa}, \texttt{ecoli\_left\_R1.fq}, \texttt{ecoli\_right\_R2.fq} are available in the HPC filesystem in the folder. \texttt{/tsl/data/reads/bioinformatics/tutorial/alignments/}
+\end{enumerate}
+
+\hypertarget{further-reading-4}{%
+\section{Further Reading}\label{further-reading-4}}
+
+You can see more information about the cluster submission system and options at the CiS \href{https://docs.cis.nbi.ac.uk/display/CIS/Run+a+simple+job+on+the+cluster}{documentation site}
 
 \bibliography{book.bib,packages.bib}
 

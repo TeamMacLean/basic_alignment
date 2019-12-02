@@ -23,7 +23,10 @@ The overall pipeline is very straightforward...
   
 ## Further Reading
 
-1. FastQ quality scores
-2. Alignment scores
-3. Why minimap2 and not bwa bowtie
+###  FastQ quality scores
+Typically the reads we use will be in the FastQ format, this is a two line format that encodes not only the sequence read, but the 'believability' of each base. You can see more [here](https://en.wikipedia.org/wiki/FASTQ_format)
+
+### Why minimap2 and not bwa|bowtie|other
+
+You may have heard of other aligners and that people in your group are using them. `minimap2` is currently the quickest and most accurate of all the aligners and has general ability with all modern sequence types. Those using others (in particular bwa and bowtie) are pretty out of date. bwa _was_ a favourite for a long time, but has been superceded. The same author created both bwa and minimap2 and minimap2 was written to address issues with bwa. 
 

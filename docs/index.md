@@ -1,7 +1,7 @@
 --- 
 title: "Basic Read Alignment"
 author: "Dan MacLean"
-date: "2019-11-29"
+date: "2019-12-02"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
@@ -74,7 +74,7 @@ Now you are done! Everything is installed ready for you to work with. Next we ne
 
 ### Sample reference genome and reads
 
-You'll need this [E.coli reference genome](sample_data/ecoli_genome.fa) file and this set of [paired end reads](sample_data/ecoli_pe.fq). Download them and put them into a folder on your machine. I suggest `Desktop/align_tut`. I'll assume that is the directory you will work from.
+You'll need this [E.coli reference genome](https://github.com/TeamMacLean/basic_alignment/blob/master/sample_data/ecoli_genome.fa) file and this set of paired end reads [left read](https://github.com/TeamMacLean/basic_alignment/blob/master/sample_data/ecoli_left_R1.fq) [right read](https://github.com/TeamMacLean/basic_alignment/blob/master/sample_data/ecoli_right_R2.fq) . Download them and put them into a folder on your machine. I suggest `Desktop/align_tut`. I'll assume that is the directory you will work from.
 
 
 That's all you need to do the lesson. If you have any problems getting this going, then ask someone in the Bioinformatics Team and we'll help.

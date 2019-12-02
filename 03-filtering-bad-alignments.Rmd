@@ -89,3 +89,5 @@ A metric that describes how well overall the read aligned, it takes into account
 ### Flags
 
 The flags option is the most powerful way to describe a filter to `samtools view`, it is also really complicated. The number you pass (e.g `-f 3`) is calculated as a sum of lots of options. The way they're are described in the [documentation](https://en.wikipedia.org/wiki/SAM_(file_format)#Bitwise_Flags) is a bit more complex than I want to go into, but there are helpful web-apps that can simplify things - [try this one](https://broadinstitute.github.io/picard/explain-flags.html) 
+
+

@@ -44,5 +44,10 @@ And this one command is all we need for a basic alignment with `minimap2`. We ca
 
 ## Further Reading
 
-The `>` operator.
-`minimap2` further instructions and github
+### The `>` operator
+
+The `>` symbol is actually not part of the `minimap2` command at all, it is a general shortcut that means something like 'catch the output from the process on the left and put it in the file on the right`. Think of the `>` as being a physical funnel catching the datastream! Because it's a general operator and not an option in a program, we can almost always use '>' to make output files. You'll see it pop up quite often
+
+### `minimap2` further instructions and github
+
+The commands given here for `minimap2` are just a small selection of what are available. You can see the user guide at [GitHub](https://github.com/lh3/minimap2)

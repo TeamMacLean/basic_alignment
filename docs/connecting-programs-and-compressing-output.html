@@ -24,7 +24,7 @@
 <meta name="author" content="Dan MacLean" />
 
 
-<meta name="date" content="2019-11-29" />
+<meta name="date" content="2019-12-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -76,11 +76,17 @@
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#align-all-reads-to-a-reference"><i class="fa fa-check"></i><b>2.1</b> Align all reads to a reference</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#filter-out-badly-scoring-reads"><i class="fa fa-check"></i><b>2.2</b> Filter out badly scoring reads</a></li>
 <li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#sort-and-compress-output"><i class="fa fa-check"></i><b>2.3</b> Sort and compress output</a></li>
-<li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#further-reading"><i class="fa fa-check"></i><b>2.4</b> Further Reading</a></li>
+<li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#further-reading"><i class="fa fa-check"></i><b>2.4</b> Further Reading</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="intro.html"><a href="intro.html#fastq-quality-scores"><i class="fa fa-check"></i><b>2.4.1</b> FastQ quality scores</a></li>
+<li class="chapter" data-level="2.4.2" data-path="intro.html"><a href="intro.html#why-minimap2-and-not-bwabowtieother"><i class="fa fa-check"></i><b>2.4.2</b> Why minimap2 and not bwa|bowtie|other</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="running-minimap2.html"><a href="running-minimap2.html"><i class="fa fa-check"></i><b>3</b> Running <code>minimap2</code></a><ul>
 <li class="chapter" data-level="3.1" data-path="running-minimap2.html"><a href="running-minimap2.html#the-minimap2-command-and-options"><i class="fa fa-check"></i><b>3.1</b> The <code>minimap2</code> command and options</a></li>
-<li class="chapter" data-level="3.2" data-path="running-minimap2.html"><a href="running-minimap2.html#further-reading-1"><i class="fa fa-check"></i><b>3.2</b> Further Reading</a></li>
+<li class="chapter" data-level="3.2" data-path="running-minimap2.html"><a href="running-minimap2.html#further-reading-1"><i class="fa fa-check"></i><b>3.2</b> Further Reading</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="running-minimap2.html"><a href="running-minimap2.html#the-operator"><i class="fa fa-check"></i><b>3.2.1</b> The <code>&gt;</code> operator</a></li>
+<li class="chapter" data-level="3.2.2" data-path="running-minimap2.html"><a href="running-minimap2.html#minimap2-further-instructions-and-github"><i class="fa fa-check"></i><b>3.2.2</b> <code>minimap2</code> further instructions and github</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html"><i class="fa fa-check"></i><b>4</b> Filtering Badly Aligned Reads</a><ul>
 <li class="chapter" data-level="4.1" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#sam-format"><i class="fa fa-check"></i><b>4.1</b> SAM Format</a></li>
@@ -114,7 +120,18 @@
 <li class="chapter" data-level="6.3" data-path="automating-the-process.html"><a href="automating-the-process.html#running-the-script"><i class="fa fa-check"></i><b>6.3</b> Running the script</a></li>
 <li class="chapter" data-level="6.4" data-path="automating-the-process.html"><a href="automating-the-process.html#running-on-different-input-files"><i class="fa fa-check"></i><b>6.4</b> Running on different input files</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="chapter" data-level="7" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html"><i class="fa fa-check"></i><b>7</b> Running an alignment on the HPC</a><ul>
+<li class="chapter" data-level="7.1" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#an-hpc-is-a-group-of-slave-computers-under-control-of-a-master-computer"><i class="fa fa-check"></i><b>7.1</b> An HPC is a group of slave computers under control of a master computer</a></li>
+<li class="chapter" data-level="7.2" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#logging-into-the-submission-node"><i class="fa fa-check"></i><b>7.2</b> Logging into the submission node</a></li>
+<li class="chapter" data-level="7.3" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#preparing-a-job"><i class="fa fa-check"></i><b>7.3</b> Preparing a job</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#the-sbatch-options"><i class="fa fa-check"></i><b>7.3.1</b> The <code>#SBATCH</code> options</a></li>
+<li class="chapter" data-level="7.3.2" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#the-source-options"><i class="fa fa-check"></i><b>7.3.2</b> The <code>source</code> options</a></li>
+<li class="chapter" data-level="7.3.3" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#the-srun-command"><i class="fa fa-check"></i><b>7.3.3</b> The <code>srun</code> command</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#submitting-with-sbatch"><i class="fa fa-check"></i><b>7.4</b> Submitting with <code>sbatch</code></a></li>
+<li class="chapter" data-level="7.5" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#checkout-tasks"><i class="fa fa-check"></i><b>7.5</b> Checkout tasks</a></li>
+<li class="chapter" data-level="7.6" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#further-reading-4"><i class="fa fa-check"></i><b>7.6</b> Further Reading</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
