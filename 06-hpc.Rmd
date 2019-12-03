@@ -42,9 +42,12 @@ To run a job we need to create a submission script. `nano` is available on the s
 
 #SBATCH -p tsl-short
 #SBATCH --mem=16G
+#SBATCH -c 4
 #SBATCH -J alignments
 #SBATCH --mail-type=begin,end,fail
 #SBATCH --mail-user=dan.maclean@tsl.ac.uk
+#SBATCH -o alignments.%j.out
+#SBATCH -e slurm.%j.err
 
 source minimap2-2.5
 source samtools-1.9
@@ -66,6 +69,9 @@ The second block of statements, all beginning `#SBATCH` are the resource options
 
 This tells the submission node which queue (or partition in the jargon) the job should run on. We have three basic partitions `tsl-short`, `tsl-medium` and `tsl-long`. The main difference is that jobs that run for a short time shouldn't be held back by jobs that run for ages, so the submission node uses this to run all of its jobs optimally.
 
+#### `#SBATCH -c`
+
+The number here tells the machine how many CPU's (processors) to use. Most tools will be able to make use of more than one and will run faster as a consequence. The job (usually) won't fail if you get this wrong, but it will take longer to start as it waits for more CPU's to come free.
 
 #### `#SBATCH --mem=` 
 
@@ -82,6 +88,10 @@ These are the times during the job that the submission node will email you to le
 #### `#SBATCH --mail-user`
 
 This is simply the address your update emails will be sent to.
+
+#### `#SBATCH -o` and `#SBATCH -e` 
+
+These are the names of files that output and errors will be sent to. On a long running process the output can get long so it goes to a file, not the email. The weird `%j` is a job ID number that uniquely identifies the job.
 
 
 ### The `source` options 
@@ -101,7 +111,7 @@ All of this information should be saved in a single script. You can call it what
 So that's all you need to know to submit a job. Let's test how that works by creating a simple job and running that. Then we'll try a bigger alignment job. These are 
 
 
-  1. Create a job using a submission script that runs this command `date`. Check what the `date` command does on the command line. Note that it runs very quickly (is a short job) and uses very little memory (< 1G).
+  1. Create a job using a submission script that runs this command `date`. Check what the `date` command does on the command line. Note that it runs very quickly (is a short job) and uses very little memory (< 1G) and only needs one CPU.
   2. What happened to the output? Check the contents of your directory when the job is done and examine the new files (`less` is useful for this). 
   3. Explicitly create an output file by running this command through the HPC instead `date > date.txt`. What is the contents of the folder now? What effect did explicitly naming an output file have. What is the `slurm_xxxx.out` file for?
   4. Run an alignment job using the information we learned in the earlier chapters. The reference file `ecoli_genome.fa`, `ecoli_left_R1.fq`, `ecoli_right_R2.fq` are available in the HPC filesystem in the folder. `/tsl/data/reads/bioinformatics/tutorial/alignments/` 

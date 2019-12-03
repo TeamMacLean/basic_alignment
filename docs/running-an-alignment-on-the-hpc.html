@@ -24,7 +24,7 @@
 <meta name="author" content="Dan MacLean" />
 
 
-<meta name="date" content="2019-12-02" />
+<meta name="date" content="2019-12-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -184,9 +184,12 @@
 
 #SBATCH -p tsl-short
 #SBATCH --mem=16G
+#SBATCH -c 4
 #SBATCH -J alignments
 #SBATCH --mail-type=begin,end,fail
 #SBATCH --mail-user=dan.maclean@tsl.ac.uk
+#SBATCH -o alignments.%j.out
+#SBATCH -e slurm.%j.err
 
 source minimap2-2.5
 source samtools-1.9
@@ -202,21 +205,29 @@ srun minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq | samtoo
 <h4><span class="header-section-number">7.3.1.1</span> <code>#SBATCH -p</code></h4>
 <p>This tells the submission node which queue (or partition in the jargon) the job should run on. We have three basic partitions <code>tsl-short</code>, <code>tsl-medium</code> and <code>tsl-long</code>. The main difference is that jobs that run for a short time shouldn’t be held back by jobs that run for ages, so the submission node uses this to run all of its jobs optimally.</p>
 </div>
+<div id="sbatch--c" class="section level4">
+<h4><span class="header-section-number">7.3.1.2</span> <code>#SBATCH -c</code></h4>
+<p>The number here tells the machine how many CPU’s (processors) to use. Most tools will be able to make use of more than one and will run faster as a consequence. The job (usually) won’t fail if you get this wrong, but it will take longer to start as it waits for more CPU’s to come free.</p>
+</div>
 <div id="sbatch---mem" class="section level4">
-<h4><span class="header-section-number">7.3.1.2</span> <code>#SBATCH --mem=</code></h4>
+<h4><span class="header-section-number">7.3.1.3</span> <code>#SBATCH --mem=</code></h4>
 <p>This tells the submission node how much memory your job will need to run. Jobs that exceed their stated memory by too much are killed. REquestiing the lowest possible memory means your job will be executed more quickly. Memory is requested in units of <code>G</code> gigabytes, usually.</p>
 </div>
 <div id="sbatch--j" class="section level4">
-<h4><span class="header-section-number">7.3.1.3</span> <code>#SBATCH -J</code></h4>
+<h4><span class="header-section-number">7.3.1.4</span> <code>#SBATCH -J</code></h4>
 <p>This is a helpful little name for you to identify your jobs with. eg <code>#SBATCH -J my_jobs</code></p>
 </div>
 <div id="sbatch---mail-type" class="section level4">
-<h4><span class="header-section-number">7.3.1.4</span> <code>#SBATCH --mail-type=</code></h4>
+<h4><span class="header-section-number">7.3.1.5</span> <code>#SBATCH --mail-type=</code></h4>
 <p>These are the times during the job that the submission node will email you to let you know of a status change in your job. Always use this option as presented for quickest information.</p>
 </div>
 <div id="sbatch---mail-user" class="section level4">
-<h4><span class="header-section-number">7.3.1.5</span> <code>#SBATCH --mail-user</code></h4>
+<h4><span class="header-section-number">7.3.1.6</span> <code>#SBATCH --mail-user</code></h4>
 <p>This is simply the address your update emails will be sent to.</p>
+</div>
+<div id="sbatch--o-and-sbatch--e" class="section level4">
+<h4><span class="header-section-number">7.3.1.7</span> <code>#SBATCH -o</code> and <code>#SBATCH -e</code></h4>
+<p>These are the names of files that output and errors will be sent to. On a long running process the output can get long so it goes to a file, not the email. The weird <code>%j</code> is a job ID number that uniquely identifies the job.</p>
 </div>
 </div>
 <div id="the-source-options" class="section level3">
@@ -236,7 +247,7 @@ srun minimap2 -ax sr ecoli_genome.fa ecoli_left_R1.fq ecoli_right_R2.fq | samtoo
 <h2><span class="header-section-number">7.5</span> Checkout tasks</h2>
 <p>So that’s all you need to know to submit a job. Let’s test how that works by creating a simple job and running that. Then we’ll try a bigger alignment job. These are</p>
 <ol style="list-style-type: decimal">
-<li>Create a job using a submission script that runs this command <code>date</code>. Check what the <code>date</code> command does on the command line. Note that it runs very quickly (is a short job) and uses very little memory (&lt; 1G).</li>
+<li>Create a job using a submission script that runs this command <code>date</code>. Check what the <code>date</code> command does on the command line. Note that it runs very quickly (is a short job) and uses very little memory (&lt; 1G) and only needs one CPU.</li>
 <li>What happened to the output? Check the contents of your directory when the job is done and examine the new files (<code>less</code> is useful for this).</li>
 <li>Explicitly create an output file by running this command through the HPC instead <code>date &gt; date.txt</code>. What is the contents of the folder now? What effect did explicitly naming an output file have. What is the <code>slurm_xxxx.out</code> file for?</li>
 <li>Run an alignment job using the information we learned in the earlier chapters. The reference file <code>ecoli_genome.fa</code>, <code>ecoli_left_R1.fq</code>, <code>ecoli_right_R2.fq</code> are available in the HPC filesystem in the folder. <code>/tsl/data/reads/bioinformatics/tutorial/alignments/</code></li>
