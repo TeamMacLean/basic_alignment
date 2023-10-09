@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Filtering Badly Aligned Reads | Basic Read Alignment</title>
   <meta name="description" content="A minimal guide to performing read alignment against a reference" />
-  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Filtering Badly Aligned Reads | Basic Read Alignment" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="A minimal guide to performing read alignment against a reference" />
   <meta name="github-repo" content="TeamMacLean/basic_alignment" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Dan MacLean" />
 
 
-<meta name="date" content="2020-01-14" />
+<meta name="date" content="2023-10-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,13 +32,15 @@
   
 <link rel="prev" href="running-minimap2.html"/>
 <link rel="next" href="connecting-programs-and-compressing-output.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -48,7 +49,16 @@
 
 
 
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -66,64 +76,79 @@
 <li><a href="./">A minimal alignment guide</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About this course</a><ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prerequisites"><i class="fa fa-check"></i><b>1.1</b> Prerequisites</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About this course</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prerequisites"><i class="fa fa-check"></i><b>1.1</b> Prerequisites</a>
+<ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#local-software-installation"><i class="fa fa-check"></i><b>1.1.1</b> Local Software Installation</a></li>
 <li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#sample-reference-genome-and-reads"><i class="fa fa-check"></i><b>1.1.2</b> Sample reference genome and reads</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> The Alignment Pipeline</a><ul>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> The Alignment Pipeline</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#align-all-reads-to-a-reference"><i class="fa fa-check"></i><b>2.1</b> Align all reads to a reference</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#filter-out-badly-scoring-reads"><i class="fa fa-check"></i><b>2.2</b> Filter out badly scoring reads</a></li>
 <li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#sort-and-compress-output"><i class="fa fa-check"></i><b>2.3</b> Sort and compress output</a></li>
-<li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#further-reading"><i class="fa fa-check"></i><b>2.4</b> Further Reading</a><ul>
+<li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#further-reading"><i class="fa fa-check"></i><b>2.4</b> Further Reading</a>
+<ul>
 <li class="chapter" data-level="2.4.1" data-path="intro.html"><a href="intro.html#fastq-quality-scores"><i class="fa fa-check"></i><b>2.4.1</b> FastQ quality scores</a></li>
 <li class="chapter" data-level="2.4.2" data-path="intro.html"><a href="intro.html#why-minimap2-and-not-bwabowtieother"><i class="fa fa-check"></i><b>2.4.2</b> Why minimap2 and not bwa|bowtie|other</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="running-minimap2.html"><a href="running-minimap2.html"><i class="fa fa-check"></i><b>3</b> Running <code>minimap2</code></a><ul>
+<li class="chapter" data-level="3" data-path="running-minimap2.html"><a href="running-minimap2.html"><i class="fa fa-check"></i><b>3</b> Running <code>minimap2</code></a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="running-minimap2.html"><a href="running-minimap2.html#the-minimap2-command-and-options"><i class="fa fa-check"></i><b>3.1</b> The <code>minimap2</code> command and options</a></li>
-<li class="chapter" data-level="3.2" data-path="running-minimap2.html"><a href="running-minimap2.html#further-reading-1"><i class="fa fa-check"></i><b>3.2</b> Further Reading</a><ul>
+<li class="chapter" data-level="3.2" data-path="running-minimap2.html"><a href="running-minimap2.html#further-reading-1"><i class="fa fa-check"></i><b>3.2</b> Further Reading</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="running-minimap2.html"><a href="running-minimap2.html#the-operator"><i class="fa fa-check"></i><b>3.2.1</b> The <code>&gt;</code> operator</a></li>
 <li class="chapter" data-level="3.2.2" data-path="running-minimap2.html"><a href="running-minimap2.html#minimap2-further-instructions-and-github"><i class="fa fa-check"></i><b>3.2.2</b> <code>minimap2</code> further instructions and github</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html"><i class="fa fa-check"></i><b>4</b> Filtering Badly Aligned Reads</a><ul>
+<li class="chapter" data-level="4" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html"><i class="fa fa-check"></i><b>4</b> Filtering Badly Aligned Reads</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#sam-format"><i class="fa fa-check"></i><b>4.1</b> SAM Format</a></li>
 <li class="chapter" data-level="4.2" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#samtools"><i class="fa fa-check"></i><b>4.2</b> <code>samtools</code></a></li>
 <li class="chapter" data-level="4.3" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#the-samtools-command-and-options"><i class="fa fa-check"></i><b>4.3</b> The <code>samtools</code> command and options</a></li>
 <li class="chapter" data-level="4.4" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#checking-the-filtering"><i class="fa fa-check"></i><b>4.4</b> Checking the filtering</a></li>
 <li class="chapter" data-level="4.5" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#are-we-done"><i class="fa fa-check"></i><b>4.5</b> Are we done?</a></li>
-<li class="chapter" data-level="4.6" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#further-reading-2"><i class="fa fa-check"></i><b>4.6</b> Further Reading</a><ul>
+<li class="chapter" data-level="4.6" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#further-reading-2"><i class="fa fa-check"></i><b>4.6</b> Further Reading</a>
+<ul>
 <li class="chapter" data-level="4.6.1" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#sam-format-1"><i class="fa fa-check"></i><b>4.6.1</b> SAM Format</a></li>
 <li class="chapter" data-level="4.6.2" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#mapping-quality"><i class="fa fa-check"></i><b>4.6.2</b> Mapping Quality</a></li>
 <li class="chapter" data-level="4.6.3" data-path="filtering-badly-aligned-reads.html"><a href="filtering-badly-aligned-reads.html#flags"><i class="fa fa-check"></i><b>4.6.3</b> Flags</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html"><i class="fa fa-check"></i><b>5</b> Connecting Programs and Compressing output</a><ul>
+<li class="chapter" data-level="5" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html"><i class="fa fa-check"></i><b>5</b> Connecting Programs and Compressing output</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#bam-files"><i class="fa fa-check"></i><b>5.1</b> BAM Files</a></li>
 <li class="chapter" data-level="5.2" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#connecting-program-input-and-output-with-pipes"><i class="fa fa-check"></i><b>5.2</b> Connecting Program Input and Output With Pipes</a></li>
-<li class="chapter" data-level="5.3" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#from-reads-to-filtered-alignments-in-one-step"><i class="fa fa-check"></i><b>5.3</b> From reads to filtered alignments in one step</a><ul>
+<li class="chapter" data-level="5.3" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#from-reads-to-filtered-alignments-in-one-step"><i class="fa fa-check"></i><b>5.3</b> From reads to filtered alignments in one step</a>
+<ul>
 <li class="chapter" data-level="5.3.1" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#from-reads-to-filtered-alignments-in-a-bam-file-in-one-step"><i class="fa fa-check"></i><b>5.3.1</b> From reads to filtered alignments in a BAM file in one step</a></li>
 </ul></li>
-<li class="chapter" data-level="5.4" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#sorting-bam-files"><i class="fa fa-check"></i><b>5.4</b> Sorting BAM files</a><ul>
+<li class="chapter" data-level="5.4" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#sorting-bam-files"><i class="fa fa-check"></i><b>5.4</b> Sorting BAM files</a>
+<ul>
 <li class="chapter" data-level="5.4.1" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#automatically-deleting-the-unsorted-bam"><i class="fa fa-check"></i><b>5.4.1</b> Automatically deleting the unsorted BAM</a></li>
 </ul></li>
 <li class="chapter" data-level="5.5" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#indexing-the-sorted-bam"><i class="fa fa-check"></i><b>5.5</b> Indexing the sorted BAM</a></li>
 <li class="chapter" data-level="5.6" data-path="connecting-programs-and-compressing-output.html"><a href="connecting-programs-and-compressing-output.html#further-reading-3"><i class="fa fa-check"></i><b>5.6</b> Further Reading</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="automating-the-process.html"><a href="automating-the-process.html"><i class="fa fa-check"></i><b>6</b> Automating The Process</a><ul>
-<li class="chapter" data-level="6.1" data-path="automating-the-process.html"><a href="automating-the-process.html#shell-scripts"><i class="fa fa-check"></i><b>6.1</b> Shell scripts</a><ul>
+<li class="chapter" data-level="6" data-path="automating-the-process.html"><a href="automating-the-process.html"><i class="fa fa-check"></i><b>6</b> Automating The Process</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="automating-the-process.html"><a href="automating-the-process.html#shell-scripts"><i class="fa fa-check"></i><b>6.1</b> Shell scripts</a>
+<ul>
 <li class="chapter" data-level="6.1.1" data-path="automating-the-process.html"><a href="automating-the-process.html#using-nano-to-create-a-shell-script"><i class="fa fa-check"></i><b>6.1.1</b> Using <code>nano</code> to create a shell script</a></li>
 </ul></li>
 <li class="chapter" data-level="6.2" data-path="automating-the-process.html"><a href="automating-the-process.html#creating-a-script-that-automates-our-alignment-pipeline."><i class="fa fa-check"></i><b>6.2</b> Creating a script that automates our alignment pipeline.</a></li>
 <li class="chapter" data-level="6.3" data-path="automating-the-process.html"><a href="automating-the-process.html#running-the-script"><i class="fa fa-check"></i><b>6.3</b> Running the script</a></li>
 <li class="chapter" data-level="6.4" data-path="automating-the-process.html"><a href="automating-the-process.html#running-on-different-input-files"><i class="fa fa-check"></i><b>6.4</b> Running on different input files</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html"><i class="fa fa-check"></i><b>7</b> Running an alignment on the HPC</a><ul>
-<li class="chapter" data-level="7.1" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#an-hpc-is-a-group-of-slave-computers-under-control-of-a-master-computer"><i class="fa fa-check"></i><b>7.1</b> An HPC is a group of slave computers under control of a master computer</a></li>
+<li class="chapter" data-level="7" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html"><i class="fa fa-check"></i><b>7</b> Running an alignment on the HPC</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#an-hpc-is-a-group-of-worker-computers-under-control-of-a-submitting-computer"><i class="fa fa-check"></i><b>7.1</b> An HPC is a group of worker computers under control of a submitting computer</a></li>
 <li class="chapter" data-level="7.2" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#logging-into-the-submission-node"><i class="fa fa-check"></i><b>7.2</b> Logging into the submission node</a></li>
-<li class="chapter" data-level="7.3" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#preparing-a-job"><i class="fa fa-check"></i><b>7.3</b> Preparing a job</a><ul>
+<li class="chapter" data-level="7.3" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#preparing-a-job"><i class="fa fa-check"></i><b>7.3</b> Preparing a job</a>
+<ul>
 <li class="chapter" data-level="7.3.1" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#the-sbatch-options"><i class="fa fa-check"></i><b>7.3.1</b> The <code>#SBATCH</code> options</a></li>
 <li class="chapter" data-level="7.3.2" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#the-source-options"><i class="fa fa-check"></i><b>7.3.2</b> The <code>source</code> options</a></li>
 <li class="chapter" data-level="7.3.3" data-path="running-an-alignment-on-the-hpc.html"><a href="running-an-alignment-on-the-hpc.html#the-srun-command"><i class="fa fa-check"></i><b>7.3.3</b> The <code>srun</code> command</a></li>
@@ -152,26 +177,26 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="filtering-badly-aligned-reads" class="section level1">
-<h1><span class="header-section-number">Chapter 4</span> Filtering Badly Aligned Reads</h1>
+<div id="filtering-badly-aligned-reads" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Filtering Badly Aligned Reads<a href="filtering-badly-aligned-reads.html#filtering-badly-aligned-reads" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Once we have an alignment, the next step is often to throw out the reads that align badly or not in pairs as we we expect. To do this we need to look at the alignments and assess them one-by-one. We’ll need first to have some understanding of the output from our alignment, in this case <code>aln.sam</code> a SAM format file.</p>
-<div id="sam-format" class="section level2">
-<h2><span class="header-section-number">4.1</span> SAM Format</h2>
+<div id="sam-format" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> SAM Format<a href="filtering-badly-aligned-reads.html#sam-format" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Alignments are generally stored in SAM format, a standard for describing how each read aligned one-by-one. Each line carries the results for a single read. Let’s examine a single reads alignment. Recall that we can look at one line in a file called <code>aln.sam</code> using <code>tail -n 1 aln.sam</code> (this gives the bottom line in the file). Running this prints the following</p>
 <pre><code>NC_011750.1_1004492_1005000_1:0:0_3:0:0_1869f   147 NC_011750.1 1004931 33  70M =   1004492 -509 TTATATTATTTGGGTTCCTGTGCTGGCGGCTATCTGGAGTATTGGCAGCCTGACAAGCAATGCCTACAAA 2222222222222222222222222222222222222222222222222222222222222222222222  NM:i:3  ms:i:110    AS:i:110    nn:i:0 tp:A:P   cm:i:2  s1:i:59 s2:i:0  de:f:0.0429 rl:i:0</code></pre>
 <p>On close inspection we can see this mess (which is only a single line) contains things like the read name, the position it maps to on the reference sequence, the read sequence, and lots of other strange things like <code>70M</code> and <code>de:f:0.0429</code>. The important thing to note is that these weird things are encoded quality information for this alignment, so we can - if we know how to manipulate those codes - select read alignment of the proper quality.</p>
 <p>Thankfully the program <code>samtools</code> makes this easy for us.</p>
 </div>
-<div id="samtools" class="section level2">
-<h2><span class="header-section-number">4.2</span> <code>samtools</code></h2>
+<div id="samtools" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> <code>samtools</code><a href="filtering-badly-aligned-reads.html#samtools" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We can accomplish read filtering with the following command.</p>
 <pre><code>samtools view -S -h -q 25 -f 3 aln.sam &gt; aln.filtered.sam
 </code></pre>
 <p>Try running that and looking at the output file that is generated. You should have another SAM format file called <code>aln.filtered.sam</code> in your working directory.</p>
 <p>Let’s take a look at that command in detail</p>
 </div>
-<div id="the-samtools-command-and-options" class="section level2">
-<h2><span class="header-section-number">4.3</span> The <code>samtools</code> command and options</h2>
+<div id="the-samtools-command-and-options" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> The <code>samtools</code> command and options<a href="filtering-badly-aligned-reads.html#the-samtools-command-and-options" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Straight away, the command seems to fit the familiar <code>program name</code> <code>options</code> <code>files</code> pattern. It starts with</p>
 <pre><code>samtools</code></pre>
 <p>which is the program name. Then we get the options</p>
@@ -181,8 +206,8 @@
 <pre><code>                               aln.sam &gt; aln.filtered.sam</code></pre>
 <p>which means the input file is our <code>aln.sam</code> and that the output should be redirected to <code>aln.filtered.sam</code></p>
 </div>
-<div id="checking-the-filtering" class="section level2">
-<h2><span class="header-section-number">4.4</span> Checking the filtering</h2>
+<div id="checking-the-filtering" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Checking the filtering<a href="filtering-badly-aligned-reads.html#checking-the-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>As an exercise to show that we did filter stuff out lets compare the input <code>aln.sam</code> file with the output <code>aln.filtered.sam</code> file. Recall that <code>wc -l</code> will give us the number of lines in a text file. Run it like this, on both files at once</p>
 <pre><code>wc -l aln.sam aln.filtered.sam
 </code></pre>
@@ -193,22 +218,22 @@
 <p>The number of lines (alignments) in the filtered files is less than that in the unfiltered, so we can casually assume the command worked.</p>
 <p>And that’s all there is to getting the reads filtered. In real-life you have many options for filtering and you may choose to do it at other points (for instance, lots of RNAseq quantification programs will allow you to filter when you use them), but the process will be similar and take advantage of the same mapping quality and flag metrics you’ve been introduced to here.</p>
 </div>
-<div id="are-we-done" class="section level2">
-<h2><span class="header-section-number">4.5</span> Are we done?</h2>
+<div id="are-we-done" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> Are we done?<a href="filtering-badly-aligned-reads.html#are-we-done" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>On the face of it then, it looks like we’ve come to the end of what we intended to do - we did an alignment, and we’ve filtered out the poor ones. In practice though, we’ll be dealing with many millions of reads, many files of many Gb size. This complicates the housekeeping we have to do, not the procedure we’ve learned <em>per se</em>, so before we jump to the HPC we need to look at that. That’s the next chapter.</p>
 </div>
-<div id="further-reading-2" class="section level2">
-<h2><span class="header-section-number">4.6</span> Further Reading</h2>
-<div id="sam-format-1" class="section level3">
-<h3><span class="header-section-number">4.6.1</span> SAM Format</h3>
+<div id="further-reading-2" class="section level2 hasAnchor" number="4.6">
+<h2><span class="header-section-number">4.6</span> Further Reading<a href="filtering-badly-aligned-reads.html#further-reading-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="sam-format-1" class="section level3 hasAnchor" number="4.6.1">
+<h3><span class="header-section-number">4.6.1</span> SAM Format<a href="filtering-badly-aligned-reads.html#sam-format-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>I only really alluded to the SAM format above, but there’s a lot to it. This <a href="https://en.wikipedia.org/wiki/SAM_(file_format)">Wikipedia page</a> gives a lot of detail.</p>
 </div>
-<div id="mapping-quality" class="section level3">
-<h3><span class="header-section-number">4.6.2</span> Mapping Quality</h3>
+<div id="mapping-quality" class="section level3 hasAnchor" number="4.6.2">
+<h3><span class="header-section-number">4.6.2</span> Mapping Quality<a href="filtering-badly-aligned-reads.html#mapping-quality" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>A metric that describes how well overall the read aligned, it takes into account not just the alignment, but the nubmer of other possible alignments that were rejected. Consider that a read mapping well equally at a number of places in the genome cannot be said to be mapping well at all. Different aligners make arbitrary decisions about how to score such alignments. See this short <a href="https://genome.sph.umich.edu/wiki/Mapping_Quality_Scores">summary</a> for information on how it can be calculated.</p>
 </div>
-<div id="flags" class="section level3">
-<h3><span class="header-section-number">4.6.3</span> Flags</h3>
+<div id="flags" class="section level3 hasAnchor" number="4.6.3">
+<h3><span class="header-section-number">4.6.3</span> Flags<a href="filtering-badly-aligned-reads.html#flags" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The flags option is the most powerful way to describe a filter to <code>samtools view</code>, it is also really complicated. The number you pass (e.g <code>-f 3</code>) is calculated as a sum of lots of options. The way they’re are described in the <a href="https://en.wikipedia.org/wiki/SAM_(file_format)#Bitwise_Flags">documentation</a> is a bit more complex than I want to go into, but there are helpful web-apps that can simplify things - <a href="https://broadinstitute.github.io/picard/explain-flags.html">try this one</a></p>
 
 </div>
@@ -224,12 +249,13 @@
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -237,12 +263,12 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -257,7 +283,15 @@ gitbook.start({
 "link": null,
 "text": null
 },
+"view": {
+"link": null,
+"text": null
+},
 "download": ["Basic Read Alignment.pdf", "Basic Read Alignment.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }

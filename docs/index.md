@@ -1,7 +1,7 @@
 --- 
 title: "Basic Read Alignment"
 author: "Dan MacLean"
-date: "2020-01-14"
+date: "2023-10-09"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book

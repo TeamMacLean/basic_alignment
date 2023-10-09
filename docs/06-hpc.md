@@ -2,15 +2,13 @@
 
 In this chapter we'll look at how to run the alignment on an HPC cluster. First, we need to know a few things about that HPC before we can begin.
 
-## An HPC is a group of slave computers under control of a master computer
+## An HPC is a group of worker computers under control of a submitting computer
 
-Most of the computers in an HPC cluster are really just there to do what one other computer tells them. They cannot be contacted directly (by the normal user) and they have very little software already on them. As the user you must get a master computer to tell them what to do. A key thing about an HPC cluster is that all the computers share one massive hard-drive. Look at the diagram below. 
+Most of the computers in an HPC cluster are really just there to do what one other computer tells them. They cannot be contacted directly (by the normal user) and they have very little software already on them. As the user you must get a submitting computer to tell them what to do. A key thing about an HPC cluster is that all the computers share one massive hard-drive. Look at the diagram below. 
 
 ![](hpc_graphic.png)
 
-It shows the computer you are working at, the master computer and it's relation to the slave computers and the hard disk. Note that there is no way for you to contact the slaves directly, even though the slaves (or more properly 'worker nodes') are where the actual job runs. So the workflow for running an HPC job goes like this
-
-  1. Log into master (more usually called 'submission node' )
+  1. Log into submitting  (more usually called 'submission node' )
   2. Prepare a task for the submission node to send to the nodes
   3. Submit the task to the submission node
   4. Wait for the submission node to send the job to the worker nodes

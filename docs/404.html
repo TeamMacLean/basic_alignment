@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 The Alignment Pipeline | Basic Read Alignment</title>
+  <title>Page not found | Basic Read Alignment</title>
   <meta name="description" content="A minimal guide to performing read alignment against a reference" />
   <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 The Alignment Pipeline | Basic Read Alignment" />
+  <meta property="og:title" content="Page not found | Basic Read Alignment" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="A minimal guide to performing read alignment against a reference" />
   <meta name="github-repo" content="TeamMacLean/basic_alignment" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 The Alignment Pipeline | Basic Read Alignment" />
+  <meta name="twitter:title" content="Page not found | Basic Read Alignment" />
   
   <meta name="twitter:description" content="A minimal guide to performing read alignment against a reference" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="running-minimap2.html"/>
+
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -177,47 +177,19 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="intro" class="section level1 hasAnchor" number="2">
-<h1><span class="header-section-number">Chapter 2</span> The Alignment Pipeline<a href="intro.html#intro" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>In this chapter we’ll look at an overview standard paired-end read run of <code>minimap2</code>, what it outputs and how to manipulate the output with <code>samtools</code>.</p>
-<p>The overall pipeline is very straightforward…</p>
-<ol style="list-style-type: decimal">
-<li>Align all reads to a reference</li>
-<li>Filter badly scoring reads</li>
-<li>Sort and compress output</li>
-</ol>
-<div id="align-all-reads-to-a-reference" class="section level2 hasAnchor" number="2.1">
-<h2><span class="header-section-number">2.1</span> Align all reads to a reference<a href="intro.html#align-all-reads-to-a-reference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>This is the main step, and with <code>minimap2</code> it can be accomplished with a single command-line. In this step each read is aligned against the reference, and its best aligning position found. That position, along with a metric of the quality of the single alignment is reported in a <code>SAM</code> format file.</p>
-</div>
-<div id="filter-out-badly-scoring-reads" class="section level2 hasAnchor" number="2.2">
-<h2><span class="header-section-number">2.2</span> Filter out badly scoring reads<a href="intro.html#filter-out-badly-scoring-reads" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>This is the quality control step. We remove reads that don’t have a good alignment score because in most contexts it means the read is a bad read with bad sequence in it. Of course in some contexts it isn’t - it depends what you’re aligning to what, but for the RNAseq situation or SNP calling situation where we expect the reads to be very like the reference this is appropriate. This step is done with <code>samtools</code></p>
-</div>
-<div id="sort-and-compress-output" class="section level2 hasAnchor" number="2.3">
-<h2><span class="header-section-number">2.3</span> Sort and compress output<a href="intro.html#sort-and-compress-output" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Once filtering is done and we have the set of reads we wish to retain we can take our output file and convert it to a sorted binary format that uses less disk space and is optimised for searching in downstream analysis. This step is a kind of housekeeping step that makes everything later easier. We do it with <code>samtools</code></p>
-</div>
-<div id="further-reading" class="section level2 hasAnchor" number="2.4">
-<h2><span class="header-section-number">2.4</span> Further Reading<a href="intro.html#further-reading" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="fastq-quality-scores" class="section level3 hasAnchor" number="2.4.1">
-<h3><span class="header-section-number">2.4.1</span> FastQ quality scores<a href="intro.html#fastq-quality-scores" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Typically the reads we use will be in the FastQ format, this is a two line format that encodes not only the sequence read, but the ‘believability’ of each base. You can see more <a href="https://en.wikipedia.org/wiki/FASTQ_format">here</a></p>
-</div>
-<div id="why-minimap2-and-not-bwabowtieother" class="section level3 hasAnchor" number="2.4.2">
-<h3><span class="header-section-number">2.4.2</span> Why minimap2 and not bwa|bowtie|other<a href="intro.html#why-minimap2-and-not-bwabowtieother" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>You may have heard of other aligners and that people in your group are using them. <code>minimap2</code> is currently the quickest and most accurate of all the aligners and has general ability with all modern sequence types. Those using others (in particular bwa and bowtie) are pretty out of date. bwa <em>was</em> a favourite for a long time, but has been superceded. The same author created both bwa and minimap2 and minimap2 was written to address issues with bwa.</p>
-
-</div>
-</div>
+<div id="page-not-found" class="section level1">
+<h1>Page not found</h1>
+<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
+<p>You may want to try searching to find the page's new location, or use
+the table of contents to find the page you are looking for.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="running-minimap2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
